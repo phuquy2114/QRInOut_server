@@ -5,7 +5,7 @@ import PhotoRouter from './photoRoute'
 const router = Router();
 
 // Add sub-routes
-router.use('/users', UserRouter);
+router.use('/employee', UserRouter);
 router.use('/photo', PhotoRouter);
 
 // Export the base-router
