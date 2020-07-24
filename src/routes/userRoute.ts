@@ -8,6 +8,8 @@ import { paramMissingError } from '@shared/constants';
 import { TimeInOut } from 'src/entity/TimeWork';
 import TimeInOutDAO from 'src/dao/TimeInOutDAO';
 
+
+const timeDAO: TimeInOutDAO = new TimeInOutDAO();
 const dataResponse: BaseResponse = new BaseResponse();
 const userDAO: UserDAO = new UserDAO();
 // Init shared
@@ -113,8 +115,8 @@ router.get('/', async (req: Request, res: Response) => {
     }
 
     var prmTel = req.query.prmTel as string;
-    var employeeTel = getInfor.phone.split(' ').join('+');
-    var employeePrmTel = prmTel.split(' ').join('+');
+    var employeeTel = getInfor.phone.split(' ').join('');
+    var employeePrmTel = prmTel.split(' ').join('');
     if (employeeTel !== employeePrmTel) {
         dataResponse.ResponseCode = "FAIL";
         dataResponse.data = {};
@@ -138,10 +140,12 @@ router.get('/', async (req: Request, res: Response) => {
         timeInOut.long = Number(prmGPSLongitude);
         timeInOut.dateTime = prmDateTime;
         timeInOut.checkInOut = true;
-        const timeDAO: TimeInOutDAO = new TimeInOutDAO();
-        var timeInsert = await timeDAO.insert(timeInOut)
+  
+        if (getInfor.checkInOut === null) {
+            getInfor.checkInOut = [];
+        }
 
-        getInfor.checkInOut.push(timeInsert);
+        getInfor.checkInOut = [await timeDAO.insert(timeInOut)];
 
         const saveFriend = await getInfor.save();
 
@@ -160,10 +164,12 @@ router.get('/', async (req: Request, res: Response) => {
         timeInOut.long = Number(prmGPSLongitude);
         timeInOut.dateTime = prmDateTime;
         timeInOut.checkInOut = false;
-        const timeDAO: TimeInOutDAO = new TimeInOutDAO();
-        var timeInsert = await timeDAO.insert(timeInOut)
 
-        getInfor.checkInOut.push(timeInsert);
+        if (getInfor.checkInOut === null) {
+            getInfor.checkInOut = [];
+        }
+
+        getInfor.checkInOut = [await timeDAO.insert(timeInOut)];
 
         const saveFriend = await getInfor.save();
 
@@ -227,8 +233,8 @@ router.post('/', async (req: Request, res: Response) => {
     }
 
     var prmTel = req.query.prmTel as string;
-    var employeeTel = getInfor.phone.split(' ').join('+');
-    var employeePrmTel = prmTel.split(' ').join('+');
+    var employeeTel = getInfor.phone.split(' ').join('');
+    var employeePrmTel = prmTel.split(' ').join('');
     if (employeeTel !== employeePrmTel) {
         dataResponse.ResponseCode = "FAIL";
         dataResponse.data = {};
@@ -251,10 +257,8 @@ router.post('/', async (req: Request, res: Response) => {
         timeInOut.long = Number(prmGPSLongitude);
         timeInOut.dateTime = prmDateTime;
         timeInOut.checkInOut = true;
-        const timeDAO: TimeInOutDAO = new TimeInOutDAO();
-        var timeInsert = await timeDAO.insert(timeInOut)
 
-        getInfor.checkInOut.push(timeInsert);
+        getInfor.checkInOut = [await timeDAO.insert(timeInOut)];
 
         const saveFriend = await getInfor.save();
 
@@ -273,10 +277,8 @@ router.post('/', async (req: Request, res: Response) => {
         timeInOut.long = Number(prmGPSLongitude);
         timeInOut.dateTime = prmDateTime;
         timeInOut.checkInOut = false;
-        const timeDAO: TimeInOutDAO = new TimeInOutDAO();
-        var timeInsert = await timeDAO.insert(timeInOut)
 
-        getInfor.checkInOut.push(timeInsert);
+        getInfor.checkInOut = [await timeDAO.insert(timeInOut)];
 
         const saveFriend = await getInfor.save();
 
