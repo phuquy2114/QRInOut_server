@@ -52,7 +52,7 @@ router.post('/register', async (req: Request, res: Response) => {
         dataResponse.ResponseCode = "OK";
         dataResponse.data = {};
         dataResponse.ResponseMessage = 'Email đã được sử dụng';
-        return res.status(BAD_REQUEST).json(dataResponse);
+        return res.status(OK).json(dataResponse);
     }
 
     dataResponse.ResponseCode = "OK";
@@ -70,6 +70,18 @@ router.get('/', async (req: Request, res: Response) => {
         });
     }
 
+    var CryptoJS = require("crypto-js");
+    var hash = CryptoJS.HmacSHA256("infra9112003", "infra9112003").toString();
+    console.log(hash);
+
+    var prmHash = req.query.prmHash as string;
+
+    if (hash !== prmHash) {
+        dataResponse.ResponseCode = "FAIL";
+        dataResponse.ResponseMessage = 'ERROR HASH NOT MATCHING';
+        return res.status(OK).send(dataResponse);;
+    }
+
     var prmCmd = req.query.prmCmd as string;
 
     var id = req.query.prmEmployeeID as string;
@@ -79,22 +91,28 @@ router.get('/', async (req: Request, res: Response) => {
     } catch (error) {
         //If not found, send a 404 response
         dataResponse.ResponseCode = "FAIL";
-        dataResponse.ResponseMessage = 'ERROR MESSAGE';
-        return res.status(404).send(dataResponse);;
+        dataResponse.ResponseMessage = 'ERROR ID EMPLOYEE NOT FOUND';
+        return res.status(OK).send(dataResponse);;
+    }
+
+    if (getInfor === undefined) {
+        dataResponse.ResponseCode = "FAIL";
+        dataResponse.ResponseMessage = 'ERROR ID EMPLOYEE NOT FOUND';
+        return res.status(OK).send(dataResponse);;
     }
 
     var prmName = req.query.prmName as string;
     if (getInfor.name !== prmName) {
         dataResponse.ResponseCode = "FAIL";
         dataResponse.ResponseMessage = 'ERROR NAME';
-        return res.status(404).send(dataResponse);;
+        return res.status(OK).send(dataResponse);;
     }
 
     var prmTel = req.query.prmTel as string;
     if (getInfor.phone !== prmTel) {
         dataResponse.ResponseCode = "FAIL";
         dataResponse.ResponseMessage = 'ERROR PHONE';
-        return res.status(404).send(dataResponse);;
+        return res.status(OK).send(dataResponse);;
     }
     if (prmCmd === "EmployeeRegistration") {
         dataResponse.ResponseCode = "OK";
@@ -112,10 +130,10 @@ router.get('/', async (req: Request, res: Response) => {
         timeInOut.long = Number(prmGPSLongitude);
         timeInOut.dateTime = prmDateTime;
         timeInOut.checkInOut = true;
-        const timeDAO : TimeInOutDAO  = new TimeInOutDAO();
+        const timeDAO: TimeInOutDAO = new TimeInOutDAO();
         var timeInsert = await timeDAO.insert(timeInOut)
 
-        getInfor.checkInOut = [timeInsert];
+        getInfor.checkInOut.push(timeInsert);
 
         const saveFriend = await getInfor.save();
 
@@ -134,10 +152,10 @@ router.get('/', async (req: Request, res: Response) => {
         timeInOut.long = Number(prmGPSLongitude);
         timeInOut.dateTime = prmDateTime;
         timeInOut.checkInOut = false;
-        const timeDAO : TimeInOutDAO  = new TimeInOutDAO();
+        const timeDAO: TimeInOutDAO = new TimeInOutDAO();
         var timeInsert = await timeDAO.insert(timeInOut)
 
-        getInfor.checkInOut = [timeInsert];
+        getInfor.checkInOut.push(timeInsert);
 
         const saveFriend = await getInfor.save();
 
@@ -158,6 +176,19 @@ router.post('/', async (req: Request, res: Response) => {
         });
     }
 
+    var CryptoJS = require("crypto-js");
+    var hash = CryptoJS.HmacSHA256("infra9112003", "infra9112003").toString();
+    console.log(hash);
+
+    var prmHash = req.query.prmHash as string;
+
+    if (hash !== prmHash) {
+        dataResponse.ResponseCode = "FAIL";
+        dataResponse.ResponseMessage = 'ERROR HASH NOT MATCHING';
+        return res.status(OK).send(dataResponse);;
+    }
+
+
     var prmCmd = req.query.prmCmd as string;
 
     var id = req.query.prmEmployeeID as string;
@@ -167,22 +198,28 @@ router.post('/', async (req: Request, res: Response) => {
     } catch (error) {
         //If not found, send a 404 response
         dataResponse.ResponseCode = "FAIL";
-        dataResponse.ResponseMessage = 'ERROR MESSAGE';
-        return res.status(404).send(dataResponse);;
+        dataResponse.ResponseMessage = 'ERROR NOT FOUND';
+        return res.status(OK).send(dataResponse);;
+    }
+
+    if (getInfor === undefined) {
+        dataResponse.ResponseCode = "FAIL";
+        dataResponse.ResponseMessage = 'ERROR ID EMPLOYEE NOT FOUND';
+        return res.status(OK).send(dataResponse);;
     }
 
     var prmName = req.query.prmName as string;
     if (getInfor.name !== prmName) {
         dataResponse.ResponseCode = "FAIL";
         dataResponse.ResponseMessage = 'ERROR NAME';
-        return res.status(404).send(dataResponse);;
+        return res.status(OK).send(dataResponse);;
     }
 
     var prmTel = req.query.prmTel as string;
     if (getInfor.phone !== prmTel) {
         dataResponse.ResponseCode = "FAIL";
         dataResponse.ResponseMessage = 'ERROR PHONE';
-        return res.status(404).send(dataResponse);;
+        return res.status(OK).send(dataResponse);;
     }
     if (prmCmd === "EmployeeRegistration") {
         dataResponse.ResponseCode = "OK";
@@ -200,10 +237,10 @@ router.post('/', async (req: Request, res: Response) => {
         timeInOut.long = Number(prmGPSLongitude);
         timeInOut.dateTime = prmDateTime;
         timeInOut.checkInOut = true;
-        const timeDAO : TimeInOutDAO  = new TimeInOutDAO();
+        const timeDAO: TimeInOutDAO = new TimeInOutDAO();
         var timeInsert = await timeDAO.insert(timeInOut)
 
-        getInfor.checkInOut = [timeInsert];
+        getInfor.checkInOut.push(timeInsert);
 
         const saveFriend = await getInfor.save();
 
@@ -222,10 +259,10 @@ router.post('/', async (req: Request, res: Response) => {
         timeInOut.long = Number(prmGPSLongitude);
         timeInOut.dateTime = prmDateTime;
         timeInOut.checkInOut = false;
-        const timeDAO : TimeInOutDAO  = new TimeInOutDAO();
+        const timeDAO: TimeInOutDAO = new TimeInOutDAO();
         var timeInsert = await timeDAO.insert(timeInOut)
 
-        getInfor.checkInOut = [timeInsert];
+        getInfor.checkInOut.push(timeInsert);
 
         const saveFriend = await getInfor.save();
 
