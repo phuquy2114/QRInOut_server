@@ -5,6 +5,8 @@ import { BaseResponse } from '../entity/BaseResponse';
 import { User } from '../entity/User';
 import UserDAO from '../dao/userDAO';
 import { paramMissingError } from '@shared/constants';
+import { TimeInOut } from 'src/entity/TimeWork';
+import TimeInOutDAO from 'src/dao/TimeInOutDAO';
 
 const dataResponse: BaseResponse = new BaseResponse();
 const userDAO: UserDAO = new UserDAO();
@@ -18,9 +20,9 @@ const router = Router();
 
 router.get('/all', async (req: Request, res: Response) => {
     const insertValue = await userDAO.getAll();
-    dataResponse.status = OK;
+    dataResponse.ResponseCode = "OK";
     dataResponse.data = insertValue;
-    dataResponse.message = 'Successfull';
+    dataResponse.ResponseMessage = 'Successfull';
     return res.status(OK).json(dataResponse);
 });
 
@@ -47,43 +49,192 @@ router.post('/register', async (req: Request, res: Response) => {
     try {
         const insertValue = await userDAO.insert(users);
     } catch (error) {
-        dataResponse.status = BAD_REQUEST;
+        dataResponse.ResponseCode = "OK";
         dataResponse.data = {};
-        dataResponse.message = 'Email đã được sử dụng';
+        dataResponse.ResponseMessage = 'Email đã được sử dụng';
         return res.status(BAD_REQUEST).json(dataResponse);
     }
 
-    dataResponse.status = CREATED;
+    dataResponse.ResponseCode = "OK";
     dataResponse.data = users;
-    dataResponse.message = 'Successfull';
+    dataResponse.ResponseMessage = 'Successfull';
     return res.status(CREATED).json(dataResponse);
 });
 
 
-router.post('/', async (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
 
-    if (!req.body) {
+    if (!req.query) {
         return res.status(BAD_REQUEST).json({
             error: paramMissingError,
         });
     }
 
+    var prmCmd = req.query.prmCmd as string;
+
     var id = req.query.prmEmployeeID as string;
-    var getInfor : User;
+    var getInfor: User;
     try {
-         getInfor = await userDAO.getUserByID(id) as User;
+        getInfor = await userDAO.getUserByID(id) as User;
     } catch (error) {
         //If not found, send a 404 response
-        return res.status(404).send("User not found");;
+        dataResponse.ResponseCode = "FAIL";
+        dataResponse.ResponseMessage = 'ERROR MESSAGE';
+        return res.status(404).send(dataResponse);;
     }
 
-    dataResponse.status = OK;
-    dataResponse.data = getInfor;
-    dataResponse.message = 'Successfull';
-    return res.status(OK).json(dataResponse);
+    var prmName = req.query.prmName as string;
+    if (getInfor.name !== prmName) {
+        dataResponse.ResponseCode = "FAIL";
+        dataResponse.ResponseMessage = 'ERROR NAME';
+        return res.status(404).send(dataResponse);;
+    }
 
+    var prmTel = req.query.prmTel as string;
+    if (getInfor.phone !== prmTel) {
+        dataResponse.ResponseCode = "FAIL";
+        dataResponse.ResponseMessage = 'ERROR PHONE';
+        return res.status(404).send(dataResponse);;
+    }
+    if (prmCmd === "EmployeeRegistration") {
+        dataResponse.ResponseCode = "OK";
+        dataResponse.data = getInfor;
+        dataResponse.ResponseMessage = 'Successfull';
+        return res.status(OK).json(dataResponse);
+    }
+
+    if (prmCmd === "EmployeeWorkOn") {
+        const timeInOut: TimeInOut = new TimeInOut();
+        var prmGPSLongitude = req.query.prmGPSLongitude as string;
+        var prmGPSLatitude = req.query.prmGPSLatitude as string;
+        var prmDateTime = req.query.prmDateTime as string;
+        timeInOut.lat = Number(prmGPSLatitude);
+        timeInOut.long = Number(prmGPSLongitude);
+        timeInOut.dateTime = prmDateTime;
+        timeInOut.checkInOut = true;
+        const timeDAO : TimeInOutDAO  = new TimeInOutDAO();
+        var timeInsert = await timeDAO.insert(timeInOut)
+
+        getInfor.checkInOut = [timeInsert];
+
+        const saveFriend = await getInfor.save();
+
+        dataResponse.ResponseCode = "OK";
+        dataResponse.data = getInfor;
+        dataResponse.ResponseMessage = 'Successfull';
+        return res.status(OK).json(dataResponse);
+    }
+
+    if (prmCmd === "EmployeeWorkOff") {
+        const timeInOut: TimeInOut = new TimeInOut();
+        var prmGPSLongitude = req.query.prmGPSLongitude as string;
+        var prmGPSLatitude = req.query.prmGPSLatitude as string;
+        var prmDateTime = req.query.prmDateTime as string;
+        timeInOut.lat = Number(prmGPSLatitude);
+        timeInOut.long = Number(prmGPSLongitude);
+        timeInOut.dateTime = prmDateTime;
+        timeInOut.checkInOut = false;
+        const timeDAO : TimeInOutDAO  = new TimeInOutDAO();
+        var timeInsert = await timeDAO.insert(timeInOut)
+
+        getInfor.checkInOut = [timeInsert];
+
+        const saveFriend = await getInfor.save();
+
+        dataResponse.ResponseCode = "OK";
+        dataResponse.data = getInfor;
+        dataResponse.ResponseMessage = 'Successfull';
+        return res.status(OK).json(dataResponse);
+    }
 });
 
+
+
+router.post('/', async (req: Request, res: Response) => {
+
+    if (!req.query) {
+        return res.status(BAD_REQUEST).json({
+            error: paramMissingError,
+        });
+    }
+
+    var prmCmd = req.query.prmCmd as string;
+
+    var id = req.query.prmEmployeeID as string;
+    var getInfor: User;
+    try {
+        getInfor = await userDAO.getUserByID(id) as User;
+    } catch (error) {
+        //If not found, send a 404 response
+        dataResponse.ResponseCode = "FAIL";
+        dataResponse.ResponseMessage = 'ERROR MESSAGE';
+        return res.status(404).send(dataResponse);;
+    }
+
+    var prmName = req.query.prmName as string;
+    if (getInfor.name !== prmName) {
+        dataResponse.ResponseCode = "FAIL";
+        dataResponse.ResponseMessage = 'ERROR NAME';
+        return res.status(404).send(dataResponse);;
+    }
+
+    var prmTel = req.query.prmTel as string;
+    if (getInfor.phone !== prmTel) {
+        dataResponse.ResponseCode = "FAIL";
+        dataResponse.ResponseMessage = 'ERROR PHONE';
+        return res.status(404).send(dataResponse);;
+    }
+    if (prmCmd === "EmployeeRegistration") {
+        dataResponse.ResponseCode = "OK";
+        dataResponse.data = getInfor;
+        dataResponse.ResponseMessage = 'Successfull';
+        return res.status(OK).json(dataResponse);
+    }
+
+    if (prmCmd === "EmployeeWorkOn") {
+        const timeInOut: TimeInOut = new TimeInOut();
+        var prmGPSLongitude = req.query.prmGPSLongitude as string;
+        var prmGPSLatitude = req.query.prmGPSLatitude as string;
+        var prmDateTime = req.query.prmDateTime as string;
+        timeInOut.lat = Number(prmGPSLatitude);
+        timeInOut.long = Number(prmGPSLongitude);
+        timeInOut.dateTime = prmDateTime;
+        timeInOut.checkInOut = true;
+        const timeDAO : TimeInOutDAO  = new TimeInOutDAO();
+        var timeInsert = await timeDAO.insert(timeInOut)
+
+        getInfor.checkInOut = [timeInsert];
+
+        const saveFriend = await getInfor.save();
+
+        dataResponse.ResponseCode = "OK";
+        dataResponse.data = getInfor;
+        dataResponse.ResponseMessage = 'Successfull';
+        return res.status(OK).json(dataResponse);
+    }
+
+    if (prmCmd === "EmployeeWorkOff") {
+        const timeInOut: TimeInOut = new TimeInOut();
+        var prmGPSLongitude = req.query.prmGPSLongitude as string;
+        var prmGPSLatitude = req.query.prmGPSLatitude as string;
+        var prmDateTime = req.query.prmDateTime as string;
+        timeInOut.lat = Number(prmGPSLatitude);
+        timeInOut.long = Number(prmGPSLongitude);
+        timeInOut.dateTime = prmDateTime;
+        timeInOut.checkInOut = false;
+        const timeDAO : TimeInOutDAO  = new TimeInOutDAO();
+        var timeInsert = await timeDAO.insert(timeInOut)
+
+        getInfor.checkInOut = [timeInsert];
+
+        const saveFriend = await getInfor.save();
+
+        dataResponse.ResponseCode = "OK";
+        dataResponse.data = getInfor;
+        dataResponse.ResponseMessage = 'Successfull';
+        return res.status(OK).json(dataResponse);
+    }
+});
 /******************************************************************************
  *                       Add One - "POST /api/users/add"
  ******************************************************************************/

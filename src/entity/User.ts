@@ -1,8 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToMany, JoinTable } from "typeorm";
+import { TimeInOut } from '../entity/TimeWork'
 
 
 @Entity({ name: "user" })
-export class User extends BaseEntity{
+export class User extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     uid: number;
@@ -24,4 +25,8 @@ export class User extends BaseEntity{
 
     @Column()
     deviceToken: string;
+
+    @ManyToMany(type => TimeInOut, { cascade: true })
+    @JoinTable()
+    checkInOut: TimeInOut[];
 }
