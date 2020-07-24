@@ -43,7 +43,7 @@ router.post('/register', async (req: Request, res: Response) => {
     const users: User = new User();
     users.id = makeid(10);
     users.name = req.body.name;
-    users.phone = req.body.phone.split(' ').join('+');
+    users.phone = req.body.phone.split(' ').join('');
     users.uniqueAppID = "com.primarynet.qrinout"
     users.password = req.body.password;
     users.deviceToken = req.body.deviceToken;
@@ -312,7 +312,7 @@ router.post('/', async (req: Request, res: Response) => {
             return res.status(OK).send(dataResponse);;
         }
 
-        
+
         getInfor.checkInOut = [await timeDAO.insert(timeInOut)];
 
         const saveFriend = await getInfor.save();
