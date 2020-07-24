@@ -136,11 +136,19 @@ router.get('/', async (req: Request, res: Response) => {
         var prmGPSLongitude = req.query.prmGPSLongitude as string;
         var prmGPSLatitude = req.query.prmGPSLatitude as string;
         var prmDateTime = req.query.prmDateTime as string;
+
         timeInOut.lat = Number(prmGPSLatitude);
         timeInOut.long = Number(prmGPSLongitude);
         timeInOut.dateTime = prmDateTime;
         timeInOut.checkInOut = true;
-  
+
+        if (timeInOut.lat === 0 || timeInOut.long === 0) {
+            dataResponse.ResponseCode = "FAIL";
+            dataResponse.data = {};
+            dataResponse.ResponseMessage = 'ERROR LOCATION AND TIME DATE ';
+            return res.status(OK).send(dataResponse);;
+        }
+
         if (getInfor.checkInOut === null) {
             getInfor.checkInOut = [];
         }
@@ -164,6 +172,15 @@ router.get('/', async (req: Request, res: Response) => {
         timeInOut.long = Number(prmGPSLongitude);
         timeInOut.dateTime = prmDateTime;
         timeInOut.checkInOut = false;
+
+              
+        if (timeInOut.lat === 0 || timeInOut.long === 0) {
+            dataResponse.ResponseCode = "FAIL";
+            dataResponse.data = {};
+            dataResponse.ResponseMessage = 'ERROR LOCATION AND TIME DATE ';
+            return res.status(OK).send(dataResponse);;
+        }
+
 
         if (getInfor.checkInOut === null) {
             getInfor.checkInOut = [];
@@ -258,6 +275,15 @@ router.post('/', async (req: Request, res: Response) => {
         timeInOut.dateTime = prmDateTime;
         timeInOut.checkInOut = true;
 
+              
+        if (timeInOut.lat === 0 || timeInOut.long === 0) {
+            dataResponse.ResponseCode = "FAIL";
+            dataResponse.data = {};
+            dataResponse.ResponseMessage = 'ERROR LOCATION AND TIME DATE ';
+            return res.status(OK).send(dataResponse);;
+        }
+
+
         getInfor.checkInOut = [await timeDAO.insert(timeInOut)];
 
         const saveFriend = await getInfor.save();
@@ -278,6 +304,15 @@ router.post('/', async (req: Request, res: Response) => {
         timeInOut.dateTime = prmDateTime;
         timeInOut.checkInOut = false;
 
+              
+        if (timeInOut.lat === 0 || timeInOut.long === 0) {
+            dataResponse.ResponseCode = "FAIL";
+            dataResponse.data = {};
+            dataResponse.ResponseMessage = 'ERROR LOCATION AND TIME DATE ';
+            return res.status(OK).send(dataResponse);;
+        }
+
+        
         getInfor.checkInOut = [await timeDAO.insert(timeInOut)];
 
         const saveFriend = await getInfor.save();
