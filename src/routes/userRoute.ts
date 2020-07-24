@@ -41,7 +41,7 @@ router.post('/register', async (req: Request, res: Response) => {
     const users: User = new User();
     users.id = makeid(10);
     users.name = req.body.name;
-    users.phone = req.body.phone;
+    users.phone = req.body.phone.split(' ').join('+');
     users.uniqueAppID = "com.primarynet.qrinout"
     users.password = req.body.password;
     users.deviceToken = req.body.deviceToken;
@@ -85,18 +85,21 @@ router.get('/', async (req: Request, res: Response) => {
     var prmCmd = req.query.prmCmd as string;
 
     var id = req.query.prmEmployeeID as string;
+
     var getInfor: User;
     try {
         getInfor = await userDAO.getUserByID(id) as User;
     } catch (error) {
         //If not found, send a 404 response
         dataResponse.ResponseCode = "FAIL";
+        dataResponse.data = {};
         dataResponse.ResponseMessage = 'ERROR ID EMPLOYEE NOT FOUND';
         return res.status(OK).send(dataResponse);;
     }
 
     if (getInfor === undefined) {
         dataResponse.ResponseCode = "FAIL";
+        dataResponse.data = {};
         dataResponse.ResponseMessage = 'ERROR ID EMPLOYEE NOT FOUND';
         return res.status(OK).send(dataResponse);;
     }
@@ -104,16 +107,21 @@ router.get('/', async (req: Request, res: Response) => {
     var prmName = req.query.prmName as string;
     if (getInfor.name !== prmName) {
         dataResponse.ResponseCode = "FAIL";
+        dataResponse.data = {};
         dataResponse.ResponseMessage = 'ERROR NAME';
         return res.status(OK).send(dataResponse);;
     }
 
     var prmTel = req.query.prmTel as string;
-    if (getInfor.phone !== prmTel) {
+    var employeeTel = getInfor.phone.split(' ').join('+');
+    var employeePrmTel = prmTel.split(' ').join('+');
+    if (employeeTel !== employeePrmTel) {
         dataResponse.ResponseCode = "FAIL";
+        dataResponse.data = {};
         dataResponse.ResponseMessage = 'ERROR PHONE';
         return res.status(OK).send(dataResponse);;
     }
+
     if (prmCmd === "EmployeeRegistration") {
         dataResponse.ResponseCode = "OK";
         dataResponse.data = getInfor;
@@ -198,12 +206,14 @@ router.post('/', async (req: Request, res: Response) => {
     } catch (error) {
         //If not found, send a 404 response
         dataResponse.ResponseCode = "FAIL";
+        dataResponse.data = {};
         dataResponse.ResponseMessage = 'ERROR NOT FOUND';
         return res.status(OK).send(dataResponse);;
     }
 
     if (getInfor === undefined) {
         dataResponse.ResponseCode = "FAIL";
+        dataResponse.data = {};
         dataResponse.ResponseMessage = 'ERROR ID EMPLOYEE NOT FOUND';
         return res.status(OK).send(dataResponse);;
     }
@@ -211,13 +221,17 @@ router.post('/', async (req: Request, res: Response) => {
     var prmName = req.query.prmName as string;
     if (getInfor.name !== prmName) {
         dataResponse.ResponseCode = "FAIL";
+        dataResponse.data = {};
         dataResponse.ResponseMessage = 'ERROR NAME';
         return res.status(OK).send(dataResponse);;
     }
 
     var prmTel = req.query.prmTel as string;
-    if (getInfor.phone !== prmTel) {
+    var employeeTel = getInfor.phone.split(' ').join('+');
+    var employeePrmTel = prmTel.split(' ').join('+');
+    if (employeeTel !== employeePrmTel) {
         dataResponse.ResponseCode = "FAIL";
+        dataResponse.data = {};
         dataResponse.ResponseMessage = 'ERROR PHONE';
         return res.status(OK).send(dataResponse);;
     }
