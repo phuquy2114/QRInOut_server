@@ -114,6 +114,14 @@ router.get('/', async (req: Request, res: Response) => {
         return res.status(OK).send(dataResponse);;
     }
 
+    var prmUniqueAppID = req.query.prmUniqueAppID as string;
+    if (!prmUniqueAppID) {
+        dataResponse.ResponseCode = "FAIL";
+        dataResponse.data = {};
+        dataResponse.ResponseMessage = 'ERROR IMEI';
+        return res.status(OK).send(dataResponse);
+    }
+
     var prmTel = req.query.prmTel as string;
     var employeeTel = getInfor.phone.split(' ').join('');
     var employeePrmTel = prmTel.split(' ').join('');
@@ -125,6 +133,26 @@ router.get('/', async (req: Request, res: Response) => {
     }
 
     if (prmCmd === "EmployeeRegistration") {
+
+        var prmUniqueAppID = req.query.prmUniqueAppID as string;
+        if (!prmUniqueAppID) {
+            dataResponse.ResponseCode = "FAIL";
+            dataResponse.data = {};
+            dataResponse.ResponseMessage = 'ERROR IMEI';
+            return res.status(OK).send(dataResponse);
+        }
+
+        getInfor.uniqueAppID = prmUniqueAppID;
+
+        try {
+            const insertValue = await userDAO.save(getInfor);
+        } catch {
+            dataResponse.ResponseCode = "FAIL";
+            dataResponse.data = {};
+            dataResponse.ResponseMessage = 'ERROR NO UPDATE ';
+            return res.status(OK).send(dataResponse);
+        }
+
         dataResponse.ResponseCode = "OK";
         dataResponse.data = getInfor;
         dataResponse.ResponseMessage = 'Successfull';
@@ -173,7 +201,7 @@ router.get('/', async (req: Request, res: Response) => {
         timeInOut.dateTime = prmDateTime;
         timeInOut.checkInOut = false;
 
-              
+
         if (timeInOut.lat === 0 || timeInOut.long === 0) {
             dataResponse.ResponseCode = "FAIL";
             dataResponse.data = {};
@@ -249,6 +277,14 @@ router.post('/', async (req: Request, res: Response) => {
         return res.status(OK).send(dataResponse);;
     }
 
+    var prmUniqueAppID = req.query.prmUniqueAppID as string;
+    if (!prmUniqueAppID) {
+        dataResponse.ResponseCode = "FAIL";
+        dataResponse.data = {};
+        dataResponse.ResponseMessage = 'ERROR IMEI';
+        return res.status(OK).send(dataResponse);
+    }
+
     var prmTel = req.query.prmTel as string;
     var employeeTel = getInfor.phone.split(' ').join('');
     var employeePrmTel = prmTel.split(' ').join('');
@@ -259,6 +295,26 @@ router.post('/', async (req: Request, res: Response) => {
         return res.status(OK).send(dataResponse);;
     }
     if (prmCmd === "EmployeeRegistration") {
+
+        var prmUniqueAppID = req.query.prmUniqueAppID as string;
+        if (!prmUniqueAppID) {
+            dataResponse.ResponseCode = "FAIL";
+            dataResponse.data = {};
+            dataResponse.ResponseMessage = 'ERROR IMEI';
+            return res.status(OK).send(dataResponse);
+        }
+
+        getInfor.uniqueAppID = prmUniqueAppID;
+
+        try {
+            const insertValue = await userDAO.save(getInfor);
+        } catch {
+            dataResponse.ResponseCode = "FAIL";
+            dataResponse.data = {};
+            dataResponse.ResponseMessage = 'ERROR NO UPDATE ';
+            return res.status(OK).send(dataResponse);
+        }
+
         dataResponse.ResponseCode = "OK";
         dataResponse.data = getInfor;
         dataResponse.ResponseMessage = 'Successfull';
@@ -275,7 +331,7 @@ router.post('/', async (req: Request, res: Response) => {
         timeInOut.dateTime = prmDateTime;
         timeInOut.checkInOut = true;
 
-              
+
         if (timeInOut.lat === 0 || timeInOut.long === 0) {
             dataResponse.ResponseCode = "FAIL";
             dataResponse.data = {};
@@ -304,7 +360,7 @@ router.post('/', async (req: Request, res: Response) => {
         timeInOut.dateTime = prmDateTime;
         timeInOut.checkInOut = false;
 
-              
+
         if (timeInOut.lat === 0 || timeInOut.long === 0) {
             dataResponse.ResponseCode = "FAIL";
             dataResponse.data = {};
