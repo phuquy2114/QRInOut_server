@@ -1,0 +1,1 @@
+{"version":3,"file":"photoDao.js","sourceRoot":"","sources":["../../src/dao/photoDao.ts"],"names":[],"mappings":";;AAAA,qCAAkC;AAClC,2CAAqC;AAErC,MAAM,QAAQ;IAEV,MAAM;QACF,OAAO,oBAAU,EAAE,CAAC,IAAI,CAAC,aAAK,CAAC,CAAC;IACpC,CAAC;IAED,MAAM,CAAC,KAAY;QACf,OAAO,oBAAU,EAAE,CAAC,IAAI,CAAQ,KAAK,CAAC,CAAC;IAC3C,CAAC;CAEJ;AACD,kBAAe,QAAQ,CAAC"}
