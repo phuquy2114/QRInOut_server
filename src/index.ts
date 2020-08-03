@@ -1,6 +1,7 @@
 import './LoadEnv'; // Must be the first import
 import { createConnection, getMetadataArgsStorage } from "typeorm";
 import express from "express";
+import app from "./Server";
 
 createConnection({
     "type": "mysql",
@@ -20,8 +21,6 @@ createConnection({
     ]
 }).then(connection => {
     console.log("Connected DB")
-    // create express app
-    const app = express();
 
     //createInstances
 
