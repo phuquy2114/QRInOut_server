@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const express_1 = require("express");
 const http_status_codes_1 = require("http-status-codes");
-const constants_1 = require("@shared/constants");
+const constants_1 = require("../shared/constants");
 const Photo_1 = require("../entity/Photo");
 const photoDao_1 = tslib_1.__importDefault(require("../dao/photoDao"));
 const router = express_1.Router();

@@ -9,7 +9,7 @@ const express_1 = tslib_1.__importDefault(require("express"));
 const http_status_codes_1 = require("http-status-codes");
 require("express-async-errors");
 const routes_1 = tslib_1.__importDefault(require("./routes"));
-const Logger_1 = tslib_1.__importDefault(require("@shared/Logger"));
+const Logger_1 = tslib_1.__importDefault(require("./shared/Logger"));
 const multer = require('multer');
 const upload = multer();
 const app = express_1.default();

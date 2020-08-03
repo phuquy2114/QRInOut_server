@@ -4,9 +4,9 @@ import { ParamsDictionary } from 'express-serve-static-core';
 import { BaseResponse } from '../entity/BaseResponse';
 import { User } from '../entity/User';
 import UserDAO from '../dao/userDAO';
-import { paramMissingError } from '@shared/constants';
-import { TimeInOut } from 'src/entity/TimeWork';
-import TimeInOutDAO from 'src/dao/TimeInOutDAO';
+import { paramMissingError } from '../shared/constants';
+import { TimeInOut } from '../entity/TimeWork';
+import TimeInOutDAO from '../dao/TimeInOutDAO';
 
 
 const timeDAO: TimeInOutDAO = new TimeInOutDAO();
