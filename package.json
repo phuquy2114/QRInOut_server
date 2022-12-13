@@ -34,7 +34,7 @@
     "crypto-js": "^4.0.0",
     "crypto-ts": "^1.0.2",
     "dotenv": "^8.2.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-async-errors": "^3.1.1",
     "express-formidable": "^1.2.0",
     "helmet": "^3.23.3",
